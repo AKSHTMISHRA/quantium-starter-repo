@@ -27,13 +27,20 @@ def ExtractData():
 
 def Preprocess(data):
     df = data[data['product'] == 'pink morsel'].copy()
-    print(df)
-    df.to_csv("combined_df.csv",index=False)
+    df['price']=df['price'].str[1:]
+    df['price']=pd.to_numeric(df['price']).astype('Int64')
+    df['Sales']=pd.to_numeric(df['price'], errors='coerce').astype('Int64')*df['quantity']
+    df['date']=pd.to_datetime(df['date'])
+    FormatedData=df[['Sales','date','region']]
+    return FormatedData
+
+
 
 def main():
     
     data=ExtractData()
-    Preprocess(data)
+    data=Preprocess(data)
+    data.to_csv('FormatedOutput.csv',index=False)
     
 
 if __name__=='__main__':
